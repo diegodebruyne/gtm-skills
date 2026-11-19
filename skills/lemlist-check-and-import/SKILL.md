@@ -17,18 +17,32 @@ Run one workflow from source data to launch readiness. Never treat a successful 
 6. Never delete, pause or overwrite existing leads without separate explicit approval.
 7. A skipped or unavailable check is not green. Mark it `NOT RUN` and explain why.
 
-## Inputs
+## Mandatory input gate
 
-Resolve or ask for:
+<!-- CONTRACT:INPUT_GATE:NO_CHECK_BEFORE_RESOLVED -->
+Before any audit, quality check, bundled script, enrichment, or Lemlist API/MCP call, create an input register containing every item below. Mark each item `RESOLVED`, `MISSING`, `CONFLICT`, or `N/A` with a reason and its source.
 
-- the exact sequence and language variants;
-- the exact lead source and scope;
-- the target Lemlist team and campaign;
-- the blacklist source, if any;
-- the maximum contacts per company;
-- whether personal addresses are permitted and supported by consent;
-- required custom fields and routing rules;
-- senders, schedule and timezone.
+| ID | Required input |
+|---|---|
+| I1 | Exact sequence, source and language variant(s) |
+| I2 | Exact lead file/source |
+| I3 | Exact scope: sheet, view, filters and expected lead count |
+| I4 | Whether personal email addresses are allowed and supported by consent |
+| I5 | Policy for leads already present in Lemlist |
+| I6 | Blacklist source(s), or explicit confirmation that none applies |
+| I7 | Maximum contacts per company |
+| I8 | Required fields, custom variables, mapping and routing rules |
+| I9 | Target campaign(s): new or existing, with names or IDs |
+| I10 | Target Lemlist team/account and available access |
+| I11 | Sender(s) per campaign |
+| I12 | Schedule, timezone and required campaign settings or labels |
+
+Resolve values already supplied by the user or unambiguously present in the named source; do not ask twice. During input discovery, inspect only the minimum metadata needed to resolve the register, such as sheet names and headers. Do not evaluate lead quality, duplicates, blacklists, copy, campaign health, or account contents yet.
+
+<!-- CONTRACT:INPUT_GATE:ASK_ONCE_AND_STOP -->
+If any item is `MISSING` or `CONFLICT`, ask for all unresolved inputs in one numbered message, recommend a safe default where useful, then **STOP**. No partial pre-check is allowed. No check starts until all I1-I12 inputs are `RESOLVED` or explicitly `N/A` with a reason.
+
+Show the completed input register before beginning the audit. Answers to input questions resolve context only: they do not authorize creating a draft, importing leads, or launching a campaign.
 
 ## Use the bundled scripts
 
@@ -49,7 +63,7 @@ Read `README.md` for concrete commands and dependencies. A script failure, unava
 
 ### 1. Audit copy and leads together
 
-Read [references/checklist.md](references/checklist.md) and run every applicable check against the actual sequence and the exact lead batch. Render Liquid branches with representative and empty values. Scan the full Lemlist account for existing people before recommending import.
+Only after the mandatory input gate is open, read [references/checklist.md](references/checklist.md) and run every applicable check against the actual sequence and the exact lead batch. Render Liquid branches with representative and empty values. Scan the full Lemlist account for existing people before recommending import.
 
 Return a table with `#`, `Check`, `Status`, `Evidence`, and `Action`. Then show the resolved sequence tree and ask for approval to create or update the draft.
 

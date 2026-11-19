@@ -15,9 +15,38 @@ if not checklist.is_file():
 skill_text = skill.read_text(encoding="utf-8") if skill.is_file() else ""
 checklist_text = checklist.read_text(encoding="utf-8") if checklist.is_file() else ""
 
-for section in ["Safety contract", "Inputs", "Workflow", "Report statuses"]:
+for section in ["Safety contract", "Mandatory input gate", "Workflow", "Report statuses"]:
     if section not in skill_text:
         errors.append(f"missing section: {section}")
+
+gate_markers = [
+    "<!-- CONTRACT:INPUT_GATE:NO_CHECK_BEFORE_RESOLVED -->",
+    "<!-- CONTRACT:INPUT_GATE:ASK_ONCE_AND_STOP -->",
+]
+for marker in gate_markers:
+    if marker not in skill_text:
+        errors.append(f"missing mandatory input-gate marker: {marker}")
+
+input_ids = re.findall(r"(?m)^\| (I\d+) \|", skill_text)
+expected_input_ids = [f"I{i}" for i in range(1, 13)]
+if input_ids != expected_input_ids:
+    errors.append("mandatory input register must contain exactly I1 through I12 in order")
+
+gate_phrases = [
+    "Before any audit, quality check, bundled script, enrichment, or Lemlist API/MCP call",
+    "ask for all unresolved inputs in one numbered message",
+    "then **STOP**",
+    "No partial pre-check is allowed",
+    "do not authorize creating a draft, importing leads, or launching a campaign",
+]
+for phrase in gate_phrases:
+    if phrase not in skill_text:
+        errors.append(f"missing mandatory input-gate rule: {phrase}")
+
+gate_position = skill_text.find(gate_markers[0])
+workflow_position = skill_text.find("## Workflow")
+if gate_position == -1 or workflow_position == -1 or gate_position > workflow_position:
+    errors.append("mandatory input gate must appear before the workflow")
 
 numbers = [int(x) for x in re.findall(r"(?m)^(\d+)\. ", checklist_text)]
 if numbers != list(range(1, 38)):
@@ -44,4 +73,4 @@ if errors:
         print(f"- {error}")
     sys.exit(1)
 
-print("CONTRACT VALID: public skill, 37 checks, executable scripts present")
+print("CONTRACT VALID: 12-input hard gate, 37 checks, executable scripts present")
