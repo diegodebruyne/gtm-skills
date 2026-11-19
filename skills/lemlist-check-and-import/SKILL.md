@@ -63,7 +63,7 @@ Read `README.md` for concrete commands and dependencies. A script failure, unava
 
 ## One numbering, one manifest, one validator
 
-A report uses only the IDs **L, C, E, D, P** (41 checks, see [references/checklist.md](references/checklist.md)). One ID = one row: never `C1-FR`, never `17/27`, never two IDs merged. Languages are mentioned inside the finding.
+A report uses only the IDs **L, C, E, D, P** (40 checks, see [references/checklist.md](references/checklist.md)). One ID = one row: never `C1-FR`, never `17/27`, never two IDs merged. Languages are mentioned inside the finding.
 
 Before showing any report:
 
@@ -114,7 +114,7 @@ After explicit import approval, import with deduplication enabled. Read the lead
 
 ### 5. Launch gate
 
-Show the final checklist with no unresolved blocking issue. State the expected start and completion dates, sender capacity and the optional reply test (P6). Ask for a separate explicit launch approval. Never launch implicitly.
+Show the final checklist with no unresolved blocking issue. State the expected start and completion dates, sender capacity and offer the optional reply test described below. Ask for a separate explicit launch approval. Never launch implicitly.
 
 ## Automatic chaining and progress table
 
@@ -131,7 +131,7 @@ The workflow has 8 fixed steps tracked by `scripts/progression.py`: 1 check the 
 
 ## Step 7 of 8 (optional): one last tip before launching
 
-P6 is a **reply test**, always optional, always advised, never imposed, never blocking. Its purpose is not technical (P3 already checked renders live): the person using the skill puts themselves in the prospect's shoes and answers one question: **"would I reply to this email?"**
+The **reply test is an optional final recommendation, not one of the 40 checks**. It is always advised, never imposed and never blocking. Its purpose is not technical (P3 already checked renders live): the person using the skill puts themselves in the prospect's shoes and answers one question: **"would I reply to this email?"**
 
 The agent proposes it with this message, plain words, no jargon:
 
@@ -143,7 +143,7 @@ The agent proposes it with this message, plain words, no jargon:
 6. "Tell me: fine as it is, or what you would change. You can skip this test."
 7. Then the launch approval request, with the exact number of leads and their split, and "nothing leaves before your word".
 
-Statuses of P6: done -> `✅` with the user's answer (yes / no / "to change: ..."); accepted but not done yet -> `🖐️`; declined or ignored -> `N/A - reply test proposed, declined by the user`. P6 never blocks the launch.
+The reply test never enters the validated report and never blocks the launch. Record the user's answer separately as an optional recommendation outcome.
 
 ## Report statuses
 

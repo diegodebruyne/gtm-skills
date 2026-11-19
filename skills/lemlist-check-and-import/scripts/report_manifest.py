@@ -69,7 +69,6 @@ CHECKS = {
     "P3": "Lemlist renders",
     "P4": "Real routing",
     "P5": "CRM sync",
-    "P6": "Reply test (optional)",
 }
 
 # Setup input -> check it drives. An input already answered is never reopened as a question without "new fact".
@@ -89,7 +88,7 @@ def expected(moment, blacklist=True, extra_fields=True, linkedin=True, ab=True, 
     elif moment == "post_draft":
         ids += ["D%d" % i for i in range(1, 8)]
     elif moment == "post_import":
-        ids += ["P%d" % i for i in range(1, 7)]
+        ids += ["P%d" % i for i in range(1, 6)]
     else:
         raise ValueError("unknown moment: %s" % moment)
     if not blacklist:

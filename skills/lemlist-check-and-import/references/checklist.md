@@ -1,4 +1,4 @@
-# The 41 checks
+# The 40 checks
 
 One numbering only: **L** (leads), **C** (sequence and copy), **E** (senders), **D** (draft and live campaign settings), **P** (post-import). A report never uses any other number. `scripts/report_manifest.py` is the executable source of this list and says exactly which IDs are expected at each moment.
 
@@ -60,4 +60,4 @@ When the target campaign already exists, D2, D5 and D7 are read live and require
 - **P3 Lemlist renders.** Previews of every email, every A/B variant and every branch on a representative sample (at least 25 leads, more for large batches), covering leads with and without a colleague, generic and personal addresses. Also check that the company name looks like what the copy says (an email about "your hotel" must not go to a bakery).
 - **P4 Real routing.** Leads sit in the right campaigns and branches; none is paused by mistake; none came from another path.
 - **P5 CRM sync.** Only when expected at this stage.
-- **P6 Reply test (optional).** See `SKILL.md`: advised for every launch, never imposed, never blocking.
+The optional reply test is described in `SKILL.md`. It is a final recommendation, not one of the 40 checks.

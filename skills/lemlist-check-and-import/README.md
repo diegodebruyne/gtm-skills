@@ -2,7 +2,7 @@
 
 A Claude Code skill that audits an outbound sequence and its lead batch before creating a Lemlist draft, importing leads or preparing launch.
 
-It includes a 41-check checklist with one numbering (L leads, C sequence and copy, E senders, D draft settings, P post-import) covering data quality, targeting, Liquid variables, sequence architecture, duplicate and blacklist checks, senders, deliverability settings, capacity, previews and post-import verification.
+It includes a 40-check checklist with one numbering (L leads, C sequence and copy, E senders, D draft settings, P post-import) covering data quality, targeting, Liquid variables, sequence architecture, duplicate and blacklist checks, senders, deliverability settings, capacity, previews and post-import verification.
 
 Every report is built from a manifest and refused by a validator unless it is complete: one row per check, a plain-words explanation before the evidence, honest statuses, exact totals, a verdict and an action table. A progress table shows the 8 workflow steps and chains them automatically; the only mandatory stops are the three approvals.
 

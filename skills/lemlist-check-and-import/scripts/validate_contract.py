@@ -56,8 +56,8 @@ if sorted(documented) != sorted(rm.CHECKS):
     missing = sorted(set(rm.CHECKS) - set(documented))
     extra = sorted(set(documented) - set(rm.CHECKS))
     errors.append("checklist and report_manifest.py disagree (missing: %s, unknown: %s)" % (missing, extra))
-if len(rm.CHECKS) != 41:
-    errors.append("expected 41 checks in the manifest, found %d" % len(rm.CHECKS))
+if len(rm.CHECKS) != 40:
+    errors.append("expected 40 checks in the manifest, found %d" % len(rm.CHECKS))
 
 for script in [
     "account_control.py",
@@ -87,4 +87,4 @@ if errors:
         print(f"- {error}")
     sys.exit(1)
 
-print("CONTRACT VALID: 12-input hard gate, 41 checks (L/C/E/D/P), executable scripts present")
+print("CONTRACT VALID: 12-input hard gate, 40 checks (L/C/E/D/P), executable scripts present")
