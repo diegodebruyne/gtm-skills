@@ -1,0 +1,7 @@
+[
+  {
+    "step": "email 1",
+    "subject": "Question pour {{companyName}}",
+    "body": "Bonjour {{firstName}},\n\nJe voulais parler du {{topic}} de votre équipe.\n\nBien à vous,\n\n{{signature}}"
+  }
+]

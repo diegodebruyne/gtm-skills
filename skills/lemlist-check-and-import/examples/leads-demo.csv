@@ -1,0 +1,4 @@
+firstName,lastName,email,linkedinUrl,companyName,vat
+Alice,Martin,alice.martin@example.com,https://www.linkedin.com/in/alice-example,Acme Corp,BE0123456789
+Alice,Martin,alice.martin@example.com,https://www.linkedin.com/in/alice-example,Acme Corp,BE0123456789
+Thomas,Dupont,thomas.dupont@example.org,https://www.linkedin.com/in/thomas-example,Example Industries,BE0987654321
