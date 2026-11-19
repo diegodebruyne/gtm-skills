@@ -51,6 +51,8 @@ python scripts/variable_junction_check.py --template examples/template-demo.json
 
 The examples are intentionally faulty so the scripts produce findings.
 
+When a source file contains operational tracking columns that must not be sent to Lemlist, pass their exact names with `--ignore-fields "column one,column two"`. Use `--extra-vars` only for intentional Lemlist custom fields.
+
 ## Important
 
 The skill separates three approvals:

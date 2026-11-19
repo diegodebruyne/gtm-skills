@@ -103,6 +103,7 @@ def main():
     ap.add_argument("--require-company-description", action="store_true", help="retire les leads dont companyDescription est vide")
     ap.add_argument("--blocked-company-type", action="append", default=[], help="companyType à retirer ; option répétable")
     ap.add_argument("--extra-vars", default="", help="variables custom propres à cette campagne, séparées par des virgules")
+    ap.add_argument("--ignore-fields", default="", help="colonnes de suivi présentes dans le fichier mais à ne jamais envoyer à Lemlist, séparées par des virgules")
     ap.add_argument("--allow-same-person-other-address", action="store_true", help="la meme personne deja dans le compte (meme LinkedIn ou meme nom+entreprise) est importee si l'ADRESSE est differente : UNIQUEMENT apres accord du user (ex. la salutation 'ou la personne qui ouvre ce mail' couvre le cas). Meme adresse = toujours retiree.")
     ap.add_argument("--keep-personal-emails", action="store_true", help="garde les adresses perso (gmail, yahoo, hotmail...) : UNIQUEMENT apres accord explicite du user, et seulement pour une base CRM de gens qui ont opt in. En outbound cold, une adresse perso n'est ni appropriee ni legale.")
     ap.add_argument("--max-per-company", type=int, default=3)
@@ -116,6 +117,10 @@ def main():
     ALLOWED.update(x.strip() for x in a.extra_vars.split(",") if x.strip())
     cids = dict(x.split("=") for x in a.campaign_ids.split(","))
     rows = json.load(open(a.input, encoding="utf-8"))
+    ignored_fields = {x.strip() for x in a.ignore_fields.split(",") if x.strip()}
+    for row in rows:
+        for field in ignored_fields:
+            row.pop(field, None)
     validate_keys(rows)
     for r in rows:
         if r.get("campaign") not in cids: raise SystemExit(f"campagne inconnue : {r.get('campaign')}")
