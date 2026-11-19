@@ -6,7 +6,7 @@ Open-source Claude Code skills for outbound, GTM operations and campaign quality
 
 ### Lemlist Check & Import
 
-Runs 37 checks across lead quality, targeting, variables, Liquid rendering, sequence architecture, duplicates, blacklists, senders, deliverability settings and post-import verification before a Lemlist campaign can be launched.
+Runs 41 checks (one numbering: L, C, E, D, P) across lead quality, targeting, variables, Liquid rendering, sequence architecture, duplicates, blacklists, senders, deliverability settings and post-import verification before a Lemlist campaign can be launched, with a validated report, an 8-step progress table and an optional reply test.
 
 See [skills/lemlist-check-and-import](skills/lemlist-check-and-import).
 

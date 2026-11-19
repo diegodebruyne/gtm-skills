@@ -11,6 +11,9 @@ Règles de rapprochement, de la plus sûre à la moins sûre :
   2. même email
   3. même nom complet ET même entreprise (slug LinkedIn société, domaine ou nom normalisé)
 Un nom complet identique avec une autre entreprise n'est PAS un doublon : le contact reste, signalé « homonyme ».
+EXCEPTION, "probable duplicate": same full name AND same job title (AND same city when both are known) in another company of the account
+is very probably the SAME person (a profile exported without public link or exact company). The exact rules cannot link them, so these are never
+kept silently: they are listed in <prefix>_probables.json for the user to decide.
 
 Entrée  : JSON, liste d'objets avec firstName, lastName, linkedinUrl, email, companyName,
           companyDomain, companyLinkedinUrl (les variantes en snake_case sont acceptées).
@@ -70,7 +73,8 @@ def main():
         cname = c.get("name", c.get("_id"))
         for l in api.leads(c.get("_id")):
             n_leads += 1
-            ref = {"campaign": cname, "email": g(l, "email"), "name": (g(l, "firstName") + " " + g(l, "lastName")).strip()}
+            ref = {"campaign": cname, "email": g(l, "email"), "name": (g(l, "firstName") + " " + g(l, "lastName")).strip(),
+                   "title": ac.norm(g(l, "jobTitle", "job_title", "poste")), "city": ac.norm((g(l, "location", "companyLocation") or "").split(",")[0]).strip()}
             s = ac.li_slug(g(l, "linkedinUrl"), "in")
             if s:
                 by_slug.setdefault(s, ref)
@@ -80,7 +84,7 @@ def main():
             if len(fn) > 5:
                 by_name.setdefault(fn, []).append((co_keys(l), ref))
 
-    new, known, homonyms = [], [], 0
+    new, known, homonyms, probables = [], [], 0, []
     for r in rows:
         s = ac.li_slug(g(r, "linkedinUrl", "linkedin", "linkedin_url"), "in")
         em = g(r, "email").lower()
@@ -97,7 +101,16 @@ def main():
                     hit, why = ref, "même nom complet et même entreprise"
                     break
             else:
-                r = dict(r, _note="homonyme dans Lemlist (autre entreprise), conservé")
+                my_title = ac.norm(g(r, "jobTitle", "job_title", "poste"))
+                my_city = ac.norm((g(r, "location", "companyLocation", "ville") or "").split(",")[0]).strip()
+                prob = None
+                for theirs, ref in by_name[fn]:
+                    if my_title and my_title == ref.get("title") and (not my_city or not ref.get("city") or my_city == ref["city"]):
+                        prob = ref
+                        break
+                if prob:
+                    probables.append(dict(r, motif="same full name, same job title and same city", deja_dans=prob["campaign"], lead_existant=prob["name"]))
+                r = dict(r, _note="homonyme dans Lemlist (autre entreprise), conservé" if not prob else "PROBABLE duplicate (same name, title, city): user decision")
                 homonyms += 1
         if hit:
             known.append(dict(r, motif=why, deja_dans=hit["campaign"], lead_existant=hit["name"]))
@@ -106,8 +119,13 @@ def main():
 
     Path(a.out_prefix + "_new.json").write_text(json.dumps(new, ensure_ascii=False, indent=1), encoding="utf-8")
     Path(a.out_prefix + "_known.json").write_text(json.dumps(known, ensure_ascii=False, indent=1), encoding="utf-8")
+    Path(a.out_prefix + "_probables.json").write_text(json.dumps(probables, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"Leads Lemlist lus (toutes campagnes) : {n_leads}")
     print(f"Contacts en entrée : {len(rows)} | à enrichir : {len(new)} | déjà connus (retirés avant paiement) : {len(known)} | homonymes conservés : {homonyms}")
+    if probables:
+        print(f"PROBABLE duplicates (same name, title and city, other company): {len(probables)}: the user decides, never kept silently")
+        for k in probables[:15]:
+            print(f"  ? {g(k,'firstName')} {g(k,'lastName')} ({g(k,'companyName')}): {k['motif']} ({k['deja_dans']})")
     for k in known[:15]:
         print(f"  - {g(k,'firstName')} {g(k,'lastName')} ({g(k,'companyName')}) : {k['motif']} ({k['deja_dans']})")
 

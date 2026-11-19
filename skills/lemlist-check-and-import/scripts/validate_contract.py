@@ -48,9 +48,16 @@ workflow_position = skill_text.find("## Workflow")
 if gate_position == -1 or workflow_position == -1 or gate_position > workflow_position:
     errors.append("mandatory input gate must appear before the workflow")
 
-numbers = [int(x) for x in re.findall(r"(?m)^(\d+)\. ", checklist_text)]
-if numbers != list(range(1, 38)):
-    errors.append("checklist must contain exactly checks 1 through 37")
+sys.path.insert(0, str(root / "scripts"))
+import report_manifest as rm
+
+documented = re.findall(r"(?m)^- \*\*([LCEDP]\d+(?:bis)?) ", checklist_text)
+if sorted(documented) != sorted(rm.CHECKS):
+    missing = sorted(set(rm.CHECKS) - set(documented))
+    extra = sorted(set(documented) - set(rm.CHECKS))
+    errors.append("checklist and report_manifest.py disagree (missing: %s, unknown: %s)" % (missing, extra))
+if len(rm.CHECKS) != 41:
+    errors.append("expected 41 checks in the manifest, found %d" % len(rm.CHECKS))
 
 for script in [
     "account_control.py",
@@ -67,6 +74,9 @@ for script in [
     "validate_report.py",
     "finalize_report.py",
     "test_validate_report.py",
+    "company_dedupe.py",
+    "test_company_dedupe.py",
+    "progression.py",
 ]:
     if not (root / "scripts" / script).is_file():
         errors.append(f"missing script: {script}")
@@ -77,4 +87,4 @@ if errors:
         print(f"- {error}")
     sys.exit(1)
 
-print("CONTRACT VALID: 12-input hard gate, 37 checks, executable scripts present")
+print("CONTRACT VALID: 12-input hard gate, 41 checks (L/C/E/D/P), executable scripts present")

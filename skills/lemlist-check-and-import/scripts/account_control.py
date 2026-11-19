@@ -132,8 +132,14 @@ def target_campaign_for(lang):
 
 
 def li_slug(u, kind):
+    """Normalized LinkedIn identifier: percent-encoding decoded (%C3%A9 = e-acute) THEN accents stripped, lowercase.
+    Without this, "cl%C3%A9ment-doe" (batch) and "clement-doe" (account) were two different keys and a person already
+    in the account was not seen as a duplicate."""
+    import unicodedata, urllib.parse
     m = re.search(r"linkedin\.com/" + kind + r"/([^/?#]+)", (u or "").lower())
-    return m.group(1) if m else ""
+    if not m:
+        return ""
+    return unicodedata.normalize("NFKD", urllib.parse.unquote(m.group(1))).encode("ascii", "ignore").decode().lower()
 
 
 def has_intent(r):

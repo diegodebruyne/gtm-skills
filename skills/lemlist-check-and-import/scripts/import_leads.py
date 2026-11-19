@@ -43,7 +43,7 @@ NATIVE_CONTACT = {"email", "firstName", "lastName", "jobTitle", "phone", "linked
 NATIVE_COMPANY = {"companyName", "companyDomain", "companyLinkedinUrl", "companyLinkedinUrlSalesNav", "companyPicture", "companyIndustry",
                   "companySubIndustry", "companyLocation", "companyHeadquarters", "companySize", "companyEmployeeCount", "companyEmployeeGrowth",
                   "companyRevenue", "companyType", "companyDescription", "companyTagline", "companySpecialties", "companyFoundedOn", "companyTechnologies"}
-NON_NATIVE_VARS = {"personaTier", "emailType", "gender", "salutation", "colleaguename1", "colleaguename2", "source", "importBatch"}
+NON_NATIVE_VARS = {"personaTier", "emailType", "gender", "salutation", "colleaguename1", "colleaguename2", "source", "importBatch", "companyPhone"}
 CONTROL_KEYS = {"campaign"}
 FORBIDDEN = {"CompanyLinkedinUrl": "companyLinkedinUrl", "leadLocation": "location"}
 PERSONAL_DOMAINS = {"gmail.com", "googlemail.com", "yahoo.com", "yahoo.fr", "yahoo.be", "hotmail.com", "hotmail.fr", "hotmail.be", "outlook.com", "outlook.be", "outlook.fr", "live.com", "live.be", "live.fr", "icloud.com", "me.com", "msn.com", "skynet.be", "telenet.be", "proximus.be", "scarlet.be", "voo.be", "gmx.com", "gmx.net", "protonmail.com", "proton.me", "aol.com"}
@@ -51,13 +51,23 @@ ALLOWED = NATIVE_CONTACT | NATIVE_COMPANY | NON_NATIVE_VARS | CONTROL_KEYS
 
 
 def _norm_value(k, v):
-    """Lemlist normalise certaines valeurs a l'import (14/10/2026 : be./nl.linkedin.com -> www., %C3%A9 -> e accent, all.accor.com -> accor.com).
-    La relecture compare donc les valeurs normalisees, sinon 61 faux ecarts sur 141 fiches."""
+    """Lemlist normalizes some values on import. The read-back must compare normalized values, otherwise it reports false gaps.
+    Known normalizations: country subdomains of linkedin.com become www; a trailing language suffix (/en, /fr...) is dropped from LinkedIn links;
+    a sub-domain is cut back to the registered domain (shop.example.com -> example.com); a phone number starting with "+" gets a leading
+    apostrophe in the CSV export (spreadsheet protection) but not through the API; emoji and the symbols (R) (TM) (C) are removed from text fields."""
     v = urllib.parse.unquote(str(v or "").strip())
     if k in ("linkedinUrl", "companyLinkedinUrl", "linkedinUrlSalesNav", "companyLinkedinUrlSalesNav"):
         v = re.sub(r"^https?://[a-z]{2,3}\.linkedin\.com", "https://www.linkedin.com", v).rstrip("/").lower()
+        v = re.sub(r"/(en|fr|nl|de|es)$", "", v)
     if k == "companyDomain":
         v = re.sub(r"^(www|all)\.", "", v.lower())
+        parts = v.split(".")
+        if len(parts) >= 3 and parts[-2] not in ("co", "com", "org", "net"):
+            v = ".".join(parts[-2:])
+    if k in ("phone", "companyPhone"):
+        v = v.lstrip("'")
+    if k in ("companyDescription", "jobTitle", "companyName"):
+        v = re.sub("[®™©🀀-🿿☀-➿️‍]", "", v)
     return v
 
 

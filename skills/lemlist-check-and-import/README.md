@@ -2,7 +2,9 @@
 
 A Claude Code skill that audits an outbound sequence and its lead batch before creating a Lemlist draft, importing leads or preparing launch.
 
-It includes a 37-point checklist covering data quality, targeting, Liquid variables, sequence architecture, duplicate and blacklist checks, senders, deliverability settings, capacity, previews and post-import verification.
+It includes a 41-check checklist with one numbering (L leads, C sequence and copy, E senders, D draft settings, P post-import) covering data quality, targeting, Liquid variables, sequence architecture, duplicate and blacklist checks, senders, deliverability settings, capacity, previews and post-import verification.
+
+Every report is built from a manifest and refused by a validator unless it is complete: one row per check, a plain-words explanation before the evidence, honest statuses, exact totals, a verdict and an action table. A progress table shows the 8 workflow steps and chains them automatically; the only mandatory stops are the three approvals.
 
 ## Install
 
@@ -33,12 +35,23 @@ The package includes executable checks in `scripts/`:
 - `import_leads.py`: guarded import, read-back and field-by-field comparison;
 - `campaign_end_date.py`: sending-capacity and completion-date simulation;
 - `format_message.py`: consistent Lemlist HTML and LinkedIn formatting;
-- `verify_no_loss.py`: source-to-output record reconciliation.
+- `verify_no_loss.py`: source-to-output record reconciliation;
+- `report_manifest.py`, `validate_report.py`, `finalize_report.py`: the single check numbering, the report validator and the finalizer that only writes an accepted report;
+- `company_dedupe.py`: company-level duplicates with a policy (`all`, `replied`, `interested`, `none`); a match is the same full domain or the same company LinkedIn page;
+- `progression.py`: the 8-step progress table (an approval is marked done only with the user's own words).
 
 Install the optional XLSX dependency with:
 
 ```bash
 python -m pip install -r requirements.txt
+```
+
+Run the self-tests:
+
+```bash
+python scripts/test_validate_report.py
+python scripts/test_company_dedupe.py
+python scripts/validate_contract.py
 ```
 
 Run the included local demonstrations:
@@ -55,7 +68,7 @@ When a source file contains operational tracking columns that must not be sent t
 
 ## Important
 
-The skill separates three approvals:
+The skill separates three approvals (and offers one optional, never blocking, reply test before launch):
 
 1. create or update the draft;
 2. import the exact lead batch;
