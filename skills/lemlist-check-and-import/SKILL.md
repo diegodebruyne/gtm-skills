@@ -15,7 +15,7 @@ Run one workflow from source data to launch readiness. Never treat a successful 
 4. Approval to create the draft does not authorize importing leads.
 5. Approval to import a specific batch does not authorize launching it.
 6. Never delete, pause or overwrite existing leads without separate explicit approval.
-7. A skipped or unavailable check is not green. Mark it `NOT RUN` and explain why.
+7. A skipped or unavailable check is not green. Use `❓`, `🖐️`, or `N/A` with a reason; never mark it `✅`.
 
 ## Mandatory input gate
 
@@ -57,7 +57,15 @@ Resolve paths relative to this skill directory and keep every generated report o
 - Use `scripts/campaign_end_date.py` to simulate sender capacity and completion dates.
 - Use `scripts/verify_no_loss.py` to reconcile source and final outputs.
 
-Read `README.md` for concrete commands and dependencies. A script failure, unavailable input or skipped script must appear as `NOT RUN`, never `PASS`.
+Read `README.md` for concrete commands and dependencies. A script failure, unavailable input or skipped script must use `❓`, `🖐️`, or `N/A` with a reason, never `✅`.
+
+## Mandatory report gate
+
+Before showing any report, generate the exact check skeleton with `scripts/report_manifest.py --moment <precheck|post_draft|post_import>`. Use one row per numeric check ID and never merge checks.
+
+Each non-`N/A` finding must start with `In plain English:` and include `Evidence:`. A `✅` may not contain an exception, missing value, incomplete coverage, unverified claim, or waiver. The report must include accurate totals, an exact verdict, and an `Actions to take` row for every `🔴`, `⚠️`, `❓`, or `🖐️`.
+
+Write the report first as a private draft outside the skill directory. Then run `scripts/finalize_report.py --draft <draft.md> --output <final.md> --moment <moment>`. Show only the generated final file. If finalization fails, correct the draft and rerun it; never call an unvalidated draft a complete report.
 
 ## Workflow
 
@@ -65,7 +73,7 @@ Read `README.md` for concrete commands and dependencies. A script failure, unava
 
 Only after the mandatory input gate is open, read [references/checklist.md](references/checklist.md) and run every applicable check against the actual sequence and the exact lead batch. Render Liquid branches with representative and empty values. Scan the full Lemlist account for existing people before recommending import.
 
-Return a table with `#`, `Check`, `Status`, `Evidence`, and `Action`. Then show the resolved sequence tree and ask for approval to create or update the draft.
+Return the finalized report, then show the resolved sequence tree and ask for approval to create or update the draft.
 
 ### 2. Create or verify the draft
 
@@ -93,8 +101,9 @@ Show the final checklist with no unresolved blocking issue. State the expected s
 
 ## Report statuses
 
-- `PASS`: executed with evidence and compliant.
-- `BLOCK`: must be corrected before the next mutation.
-- `DECISION`: requires an explicit user choice.
-- `HUMAN TEST`: requires inbox or UI verification.
-- `NOT RUN`: unavailable or not applicable, with a reason.
+- `✅`: executed with evidence and compliant.
+- `🔴`: must be corrected before the next mutation.
+- `⚠️`: verified risk that does not block the next gate.
+- `❓`: requires an explicit user choice.
+- `🖐️`: requires inbox or UI verification.
+- `N/A`: not applicable, with a reason.

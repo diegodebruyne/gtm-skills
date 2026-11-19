@@ -63,6 +63,10 @@ for script in [
     "render_gap_check.py",
     "variable_junction_check.py",
     "verify_no_loss.py",
+    "report_manifest.py",
+    "validate_report.py",
+    "finalize_report.py",
+    "test_validate_report.py",
 ]:
     if not (root / "scripts" / script).is_file():
         errors.append(f"missing script: {script}")
