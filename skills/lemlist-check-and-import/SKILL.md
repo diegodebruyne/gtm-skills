@@ -92,7 +92,9 @@ Only after the mandatory input gate is open, read [references/checklist.md](refe
 
 Return the finalized report, then show the resolved sequence tree and ask for approval to create or update the draft.
 
-### 2. Create or verify the draft
+### 2. Import the sequence into Lemlist
+
+When speaking to the user, never say "create the draft": the approval message says "import the sequence into Lemlist, with no leads, nothing is sent".
 
 After explicit draft approval, create or update only the campaign structure. Keep it paused and import no leads. Read back sequence steps, conditions, delays, settings, labels, schedule and senders. Report any mismatch.
 

@@ -7,7 +7,7 @@ changes and shows `show` at the top of every message to the user.
 Eight fixed steps. The three APPROVALS (draft architecture, import of the exact batch, launch) are the only mandatory stops; everything else
 chains on its own without asking.
   1 check             Check the copy and the leads (validated pre-check report)
-  2 structure         Create the Lemlist campaigns (only if they do not exist yet)
+  2 structure         Import the sequence into Lemlist (no leads; only if the campaign does not exist yet)
   3 dossier           Import dossier (dry run of the exact batch: duplicates, caps, mapping)
   4 import_approval   APPROVAL to import THIS exact batch into THIS campaign
   5 import            Import the leads (they wait in "review", nothing is sent)
@@ -33,7 +33,7 @@ from pathlib import Path
 
 STEPS = [
     ("check", "Check the copy and the leads"),
-    ("structure", "Create the Lemlist campaigns (only if they do not exist yet)"),
+    ("structure", "Import the sequence into Lemlist (no leads; only if the campaign does not exist yet)"),
     ("dossier", "Import dossier (dry run of the exact batch)"),
     ("import_approval", "APPROVAL to import (user)"),
     ("import", "Import the leads (in review, nothing is sent)"),

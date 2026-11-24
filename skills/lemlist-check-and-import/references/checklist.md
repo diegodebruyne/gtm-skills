@@ -25,11 +25,11 @@ Apply only the checks expected at the current moment, but never silently omit on
 - **C3 Liquid syntax, fallbacks and agreements.** Every `{% if %}` has its `{% endif %}`, no orphan tag or unresolved variable, every branch rendered with representative and empty values, grammatical agreements correct (gender, plural, salutation).
 - **C4 LinkedIn continuity.** Invitation, acceptance wait and follow-up messages are chained so that a lead who accepts receives the next message, and a lead without email still gets a complete path.
 - **C5 Personalized content composition.** Personalized fragments (generated or variable) join the fixed text into correct sentences, with no repetition and no claim the data does not support.
-- **C6 Signatures per channel and spacing.** The right sender signature appears in the right channel and position; exactly one blank line separates the closing phrase from the signature.
+- **C6 Signatures per channel and spacing.** The right sender signature appears in the right channel and position; exactly one blank line separates the closing phrase from the signature. If a LinkedIn step carries native media (GIF, image, video) AND `{{sender.firstName}}`, the agent removes `{{sender.firstName}}` from that step itself, without asking, keeps the media, states it in the report and re-verifies (Lemlist renders the media after the sign-off). It stays blocking only if the fix could not be made.
 - **C7 Unsubscribe.** Uses the correct Lemlist token, resolves to a clickable link at preview time, and appears where the chosen policy and the applicable law require it.
 - **C8 Whitespace and paragraph rendering.** Raw HTML and every rendered Liquid branch contain no double spaces between words, no space before commas or periods, no leading or trailing whitespace, no empty paragraphs, no consecutive blank lines, no malformed list.
 - **C8bis LinkedIn media.** A GIF, image or video never appears after a sign-off or a sender first name, and arrives as an attachment rather than a plain-text link (only a real LinkedIn test confirms the latter).
-- **C9 Email 1 A/B.** If email 1 has variants, both are complete and differ only by the intended element; variant A is never rewritten without approval.
+- **C9 Email 1 A/B.** If email 1 has variants, both are complete and differ in exactly ONE element, the subject OR the body, never both (two differing elements = blocking: the result could not say which one made the difference; identical variants = blocking). The report names the tested element. Variant A is never rewritten without approval.
 - **C10 Hard-coded links.** Detect every fixed URL, test it (HTTP 200, content type), and only fall back to a human check when it cannot be tested.
 - **C11 Register and cross-language consistency.** Same register (formal or informal) across the whole email, same meaning and same figures in every language version.
 - **C12 Subject quality.** Concise, relevant, truthful, personalized where useful, and rendered with real variable lengths.
@@ -48,7 +48,7 @@ When the target campaign already exists, D2, D5 and D7 are read live and require
 - **D1 Source / Lemlist match.** The structure read back from Lemlist equals the approved plan.
 - **D2 Reply, tracking and stop settings.** Open/click/reply tracking and stop-on-reply (including propagation to the whole company where intended) match the approved policy.
 - **D3 Senders and connections.** The intended senders are attached to the right campaign and connected.
-- **D4 Schedule and capacity.** Schedule, sending days, timezone, holidays and sender capacity give an acceptable completion date, computed with the real senders and the real schedule.
+- **D4 Schedule and capacity.** Schedule, sending days, timezone, holidays and sender capacity give an acceptable completion date, computed with the real senders and the real schedule. The timezone is the one of the prospects' country (for example `Asia/Dubai` for the UAE), set by the agent without asking and proven by reading the schedule back (`GET /api/campaigns/{id}/schedules`). A schedule in the sender's or the client's timezone is blocking.
 - **D5 Labels.** Campaign labels are correct and persist after being written.
 - **D6 Real signatures and unsubscribe.** Signature and unsubscribe resolve correctly in the created draft.
 - **D7 Lemlist readiness.** Lemlist's own readiness validation reports no blocking step error.

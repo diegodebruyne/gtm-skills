@@ -46,7 +46,7 @@ CHECKS = {
     "C7": "Unsubscribe",
     "C8": "Whitespace and paragraph rendering",
     "C8bis": "LinkedIn media",
-    "C9": "Email 1 A/B",
+    "C9": "Email 1 A/B: one single tested element (subject OR body)",
     "C10": "Hard-coded links",
     "C11": "Register and cross-language consistency",
     "C12": "Subject quality",
