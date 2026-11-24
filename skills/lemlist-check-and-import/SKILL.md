@@ -14,6 +14,7 @@ Run one workflow from source data to launch readiness. Never treat a successful 
 3. Never create or modify a Lemlist campaign before showing the audit and receiving explicit approval for the draft.
 4. Approval to create the draft does not authorize importing leads.
 5. Approval to import a specific batch does not authorize launching it.
+6. Never delete a lead to move, fix or re-import it: the MCP tool `delete_campaign_leads` removes the lead AND adds it to the account-wide unsubscribe list, so the lead can no longer be contacted by any campaign. After any deletion or import, read the unsubscribe list back and compare it with the leads touched; an unsubscribed lead is never counted as imported.
 6. Never delete, pause or overwrite existing leads without separate explicit approval.
 7. A skipped or unavailable check is not green. Use `❓`, `🖐️`, or `N/A` with a reason; never mark it `✅`.
 
